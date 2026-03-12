@@ -1,13 +1,12 @@
 package com.example.cru.domain.order_item.model.request;
 
 import com.example.cru.domain.order_item_custom.model.request.OrderItemCustomRequest;
-import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CreatedOrderItemRequest {
+public class CreateOrderItemRequest {
     private Long itemId;
     private int quantity;
     private int itemPrice;
