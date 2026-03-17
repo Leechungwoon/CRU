@@ -1,13 +1,15 @@
 package com.example.cru.domain.order_item.model.request;
 
 import com.example.cru.domain.order_item_custom.model.request.OrderItemCustomRequest;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class OrderItemRequest {
-
+@AllArgsConstructor
+public class CreateOrderItemRequest {
     private Long itemId;
-    private int itemPrice;
     private int quantity;
-    private OrderItemCustomRequest custom;
+    private int itemPrice;
+    private int unitPrice;
+    private OrderItemCustomRequest customRequest;
 }
