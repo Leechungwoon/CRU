@@ -1,10 +1,13 @@
 package com.example.cru.domain.order.service;
 
+import com.example.cru.common.enums.OrderStatus;
 import com.example.cru.domain.item.entity.Item;
 import com.example.cru.domain.item.repository.ItemRepository;
 import com.example.cru.domain.order.entity.Order;
 import com.example.cru.domain.order.model.request.CreateOrderRequest;
 import com.example.cru.domain.order.model.response.CreateOrderResponse;
+import com.example.cru.domain.order.model.response.GetDetailOrderResponse;
+import com.example.cru.domain.order.model.response.GetOrderListResponse;
 import com.example.cru.domain.order.repository.OrderRepository;
 import com.example.cru.domain.order_item.entity.OrderItem;
 import com.example.cru.domain.order_item.model.request.CreateOrderItemRequest;
@@ -15,8 +18,12 @@ import com.example.cru.domain.payment.repository.OrderItemCustomRepository;
 import com.example.cru.domain.user.entity.User;
 import com.example.cru.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,11 +43,6 @@ public class OrderService {
         //유저(판매자) 조회
         User buyer = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException());
-
-
-        //총 금액 계산
-//        int totalPrice = request.getItems().stream()
-//                .mapToInt(item -> item.getItemPrice() * item.getQuantity()).sum();
 
         //총 금액 계산
         /**
@@ -124,6 +126,47 @@ public class OrderService {
 
         // 주문 생성 결과 반환 Order 기반 응답 DTO변환
         return CreateOrderResponse.from(order);
+    }
+
+    //주문 정보 상세 조회
+    @Transactional(readOnly = true)
+    public GetDetailOrderResponse getDetailOrder(Long orderId, Long userId){
+
+        //Order 정보 조회
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException());
+
+        //OrderItem 목록 조회
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
+
+        return GetDetailOrderResponse.from(order,orderItemList);
+    }
+
+    //주문 정보 목록 조회
+    @Transactional(readOnly = true)
+    public Page<GetOrderListResponse> getAllOrder(Long userId, Pageable pageable) {
+
+        Page<Order>orders = orderRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+        return orders.map(GetOrderListResponse::from);
+    }
+
+    //주문 취소 로직
+    @Transactional
+    public void cancelOrder(Long orderId, Long userId){
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException());
+
+        // 본인 주문 여부
+        if (!order.getUserId().equals(userId)){
+            throw new RuntimeException("본인 주문만 취소 가능합니다.");
+        }
+
+        //PENDING 상태인지 확인
+        if (!order.isCancelable()){
+            throw new RuntimeException("PENDING 상태에서 취소 가능합니다.");
+        }
+        order.updateStatus(OrderStatus.CANCELED);
     }
 }
 

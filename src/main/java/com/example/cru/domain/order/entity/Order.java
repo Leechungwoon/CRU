@@ -22,18 +22,18 @@ public class Order extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private Long userId; //주문자 id
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;
+    private OrderStatus status; // 주문상태
 
     @Column(nullable = false)
-    private int totalPrice;
+    private int totalPrice; //총 금액
 
-    private String deliveryAddress;
+    private String deliveryAddress; // 배송지
 
-    private String deliveryMemo;
+    private String deliveryMemo; // 배송 메모
 
     @Builder
     public Order(Long userId, OrderStatus status, int totalPrice, String deliveryAddress, String deliveryMemo) {
@@ -44,10 +44,12 @@ public class Order extends BaseEntity {
         this.deliveryMemo = deliveryMemo;
     }
 
+    //주문 상태 변경시 사용
     public void updateStatus(OrderStatus status) {
         this.status = status;
     }
 
+    //주문 취소 시 사용(PENDING)인 경우에만 변경 가능
     public boolean isCancelable() {
         return this.status == OrderStatus.PENDING;
     }
