@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "payments")
 @Getter
@@ -24,15 +26,16 @@ public class Payment {
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
 
-    @Column(unique = true)
-    private String tossPaymentKey; // 토스 결제 고유 키 (결제 완료 후 저장)
-
-    private String method; // CARD, VIRTUAL_ACCOUNT 등 (토스 응답값 그대로)
-
     @Column(nullable = false)
-    private int amount;
+    private int amount; // 실제 결제 금액
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus status;
+    private PaymentStatus status; //결제 상태 (SUCCESS / CANCELED)
+
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt; //결제 시각
+
+    @Column(name = "canceled_at")
+    private LocalDateTime canceledAt; // 취소 시각
 }
