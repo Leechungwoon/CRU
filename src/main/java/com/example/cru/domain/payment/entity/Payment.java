@@ -3,15 +3,17 @@ package com.example.cru.domain.payment.entity;
 import com.example.cru.common.enums.PaymentStatus;
 import com.example.cru.domain.order.entity.Order;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payments")
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @SQLRestriction("is_deleted = false")
 public class Payment {
 
@@ -24,15 +26,32 @@ public class Payment {
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
 
-    @Column(unique = true)
-    private String tossPaymentKey; // 토스 결제 고유 키 (결제 완료 후 저장)
-
-    private String method; // CARD, VIRTUAL_ACCOUNT 등 (토스 응답값 그대로)
-
     @Column(nullable = false)
-    private int amount;
+    private int amount; // 실제 결제 금액
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus status;
+    private PaymentStatus status; //결제 상태 (SUCCESS / CANCELED)
+
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt; //결제 시각
+
+    @Column(name = "canceled_at")
+    private LocalDateTime canceledAt; // 취소 시각
+
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private boolean isDeleted = false; // 소프트 삭제
+
+    // 삭재 여부 표시
+    public void softDelete() {
+        this.isDeleted = true;
+    }
+
+    // 결제 취소
+    public void cancel(){
+        this.status = PaymentStatus.CANCELED;
+        this.canceledAt = LocalDateTime.now();
+    }
+    //결제 상태가 성공 및 취소만 있는 이유는 결제 MVP에서는 승인 실패 시 payment에 저장을 안하기 때문에 예외로 대체로 진행 추후 PG 연동 후 FAILED 상태 추가 예정
 }
