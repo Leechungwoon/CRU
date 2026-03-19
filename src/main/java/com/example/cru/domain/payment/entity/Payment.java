@@ -39,17 +39,8 @@ public class Payment {
     @Column(name = "canceled_at")
     private LocalDateTime canceledAt; // 취소 시각
 
-    @Column(name = "is_deleted", nullable = false)
-    @Builder.Default
-    private boolean isDeleted = false; // 소프트 삭제
-
-    // 삭재 여부 표시
-    public void softDelete() {
-        this.isDeleted = true;
-    }
-
     // 결제 취소
-    public void cancel(){
+    public void cancel() {
         this.status = PaymentStatus.CANCELED;
         this.canceledAt = LocalDateTime.now();
     }
