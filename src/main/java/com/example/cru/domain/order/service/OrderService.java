@@ -14,7 +14,7 @@ import com.example.cru.domain.order_item.model.request.CreateOrderItemRequest;
 import com.example.cru.domain.order_item.repository.OrderItemRepository;
 import com.example.cru.domain.order_item_custom.entity.OrderItemCustom;
 import com.example.cru.domain.order_item_custom.model.request.OrderItemCustomRequest;
-import com.example.cru.domain.payment.repository.OrderItemCustomRepository;
+import com.example.cru.domain.order_item_custom.OrderItemCustomRepository;
 import com.example.cru.domain.user.entity.User;
 import com.example.cru.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
