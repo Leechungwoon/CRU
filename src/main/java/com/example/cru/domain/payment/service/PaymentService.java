@@ -55,8 +55,23 @@ public class PaymentService {
 
     //결제 취소
     @Transactional
-    public void canceledPayment() {
+    public void canceledPayment(Long paymentId) {
 
+        // 1. 결제 조회
+        Payment payment = paymentRepository.findByPaymentId(paymentId)
+                .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다,"));
+
+        // 2. 취소 전,후 여부 확인
+        if (payment.getStatus() == PaymentStatus.CANCELED) {
+            throw new RuntimeException("취소된 결제입니다.");
+        }
+
+        // 3. 결제 취소 로직
+        payment.cancel();
+
+        // 4. Order 상태 변경 PAID -> CANCELED로 변경
+        Order order = payment.getOrder();
+        order.updateStatus(OrderStatus.CANCELED);
     }
 
     //결제 조회
