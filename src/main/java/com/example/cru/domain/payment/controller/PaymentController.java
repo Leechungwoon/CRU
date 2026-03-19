@@ -28,10 +28,13 @@ public class PaymentController {
 
     //결제 취소
     @PostMapping
-    public void canceledPay() {
+    public ResponseEntity<CommonResponse> canceledPay(@PathVariable Long paymentId) {
 
         //비지니스 로직
-        paymentService.canceledPayment();
+        paymentService.canceledPayment(paymentId);
+
+        //Dto 반환
+        return ResponseEntity.ok(CommonResponse.success("결제가 취소되었습니다.", null));
     }
 
     //결제 조회
