@@ -21,4 +21,11 @@ public class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;   //수정일
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
+    public void delete() {
+        this.isDeleted = true;
+    }
 }
