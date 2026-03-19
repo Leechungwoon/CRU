@@ -47,5 +47,11 @@ public class Payment {
     public void softDelete() {
         this.isDeleted = true;
     }
+
+    // 결제 취소
+    public void cancel(){
+        this.status = PaymentStatus.CANCELED;
+        this.canceledAt = LocalDateTime.now();
+    }
     //결제 상태가 성공 및 취소만 있는 이유는 결제 MVP에서는 승인 실패 시 payment에 저장을 안하기 때문에 예외로 대체로 진행 추후 PG 연동 후 FAILED 상태 추가 예정
 }
