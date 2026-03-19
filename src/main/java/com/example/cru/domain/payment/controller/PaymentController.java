@@ -39,10 +39,13 @@ public class PaymentController {
 
     //결제 조회
     @GetMapping
-    public void getMyPay() {
+    public ResponseEntity<CommonResponse> getMyPay(@PathVariable Long orderId) {
 
         //비지니스 로직
-        paymentService.getMyPayment();
+        PaymentDto response = paymentService.getMyPayment(orderId);
+
+        //Dto 반환
+        return ResponseEntity.ok(CommonResponse.success("결제 내역이 조회됐습니다."));
     }
 
 }

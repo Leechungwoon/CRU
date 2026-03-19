@@ -11,6 +11,7 @@ import com.example.cru.domain.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 
@@ -76,8 +77,13 @@ public class PaymentService {
 
     //결제 조회
     @Transactional(readOnly = true)
-    public void getMyPayment() {
+    public PaymentDto getMyPayment(Long orderId) {
 
+        //결제 상품 조회
+        Payment payment = paymentRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
+
+        return PaymentDto.from(payment);
     }
 
 
