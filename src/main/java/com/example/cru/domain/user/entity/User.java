@@ -4,6 +4,7 @@ import com.example.cru.common.entity.BaseEntity;
 import com.example.cru.common.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
@@ -34,6 +35,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserRole role;
 
+    @Builder
     public User(Long id, String email, String password, String name, String phone) {
         this.id = id;
         this.email = email;
