@@ -27,7 +27,7 @@ public class PaymentService {
     public PaymentDto successPayment(Long orderId, SuccessPaymentRequest request) {
 
         // 1. 주문 조회
-        Order order = orderRepository.findByOrderId(orderId)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
         //2. 결제 여부 확인
         paymentRepository.findByOrderId(orderId).ifPresent(p -> {
@@ -59,7 +59,7 @@ public class PaymentService {
     public void canceledPayment(Long paymentId) {
 
         // 1. 결제 조회
-        Payment payment = paymentRepository.findByPaymentId(paymentId)
+        Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다,"));
 
         // 2. 취소 전,후 여부 확인
