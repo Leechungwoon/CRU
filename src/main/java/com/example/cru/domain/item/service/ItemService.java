@@ -18,7 +18,7 @@ public class ItemService {
 
     //item 등록
     @Transactional
-    public CreateItemResponse createItem(Long userId, Long itemId, CreateItemRequest request) {
+    public CreateItemResponse createItem(Long userId, CreateItemRequest request) {
 
         // 1. item 생성
         Item item = Item.builder()
