@@ -16,11 +16,11 @@ public class ItemController {
     private final ItemService itemService;
 
     //item 등록
-    @PostMapping("/item/{item}")
-    public ResponseEntity<CommonResponse> createItem(@PathVariable Long userId, @PathVariable Long itemId, @RequestBody CreateItemRequest request) {
+    @PostMapping("/item/{userId}")
+    public ResponseEntity<CommonResponse> createItem(@PathVariable Long userId, @RequestBody CreateItemRequest request) {
 
         //비지니스 로직
-        CreateItemResponse response = itemService.createItem(userId, itemId, request);
+        CreateItemResponse response = itemService.createItem(userId, request);
 
         //Dto 반환
         return ResponseEntity.ok(CommonResponse.success("상품을 등록했습니다.", response));
