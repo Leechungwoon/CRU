@@ -23,7 +23,7 @@ public class OrderController {
     private final OrderService orderService;
 
     // 주문 정보 생성
-    @PostMapping("order/users/{userId}")
+    @PostMapping("/order/users/{userId}")
     public ResponseEntity<CommonResponse> createOrder(@PathVariable Long userId, @RequestBody CreateOrderRequest request) {
 
         // 비지니스 로직
@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     // 주문 정보 조회
-    @GetMapping("get/order/{userId}")
+    @GetMapping("/get/order/{userId}")
     public ResponseEntity<CommonResponse> getDetailOrder(@PathVariable Long orderId, @PathVariable Long userId) {
         // 비지니스 로직
         GetDetailOrderResponse response = orderService.getDetailOrder(orderId, userId);
@@ -44,7 +44,7 @@ public class OrderController {
     }
 
     //주문 목록 조회 -> 페이징 적용
-    @GetMapping("users/orderList")
+    @GetMapping("/users/orderList")
     public ResponseEntity<PageResponse> getOrderList(@PathVariable Long userId, @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         //페이징 적용된 비지니스 로직

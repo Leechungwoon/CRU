@@ -2,10 +2,12 @@ package com.example.cru.domain.order.model.request;
 
 import com.example.cru.domain.order_item.model.request.CreateOrderItemRequest;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class CreateOrderRequest {
 
     public String deliveryAddress;
