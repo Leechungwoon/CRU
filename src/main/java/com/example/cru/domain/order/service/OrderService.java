@@ -57,13 +57,14 @@ public class OrderService {
         }
 
         /**
-         * Order 엔티티 생성
+         * Order 저장
          *
          * 주문의 기본 정보 저장
          * 주문의 사용자
          * 총 주문 금액
          * 배송 주소
          * 배송시 메모사항
+         * 주문 상태
          */
         //order 저장 -> 주문 정보
         Order order = Order.builder()
@@ -71,6 +72,7 @@ public class OrderService {
                 .totalPrice(totalPrice)
                 .deliveryAddress(request.getDeliveryAddress())
                 .deliveryMemo(request.getDeliveryMemo())
+                .status(OrderStatus.PENDING)
                 .build();
         orderRepository.save(order);
 
