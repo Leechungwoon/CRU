@@ -15,13 +15,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateUserResponse createUser(Long userId, CreateUserRequest request) {
+    public CreateUserResponse createUser(CreateUserRequest request) {
         User user = new User(
                 null,
                 request.getEmail(),
                 request.getPassword(),
                 request.getName(),
-                request.getPhon()
+                request.getPhone()
         );
         userRepository.save(user);
         return CreateUserResponse.from(user);
