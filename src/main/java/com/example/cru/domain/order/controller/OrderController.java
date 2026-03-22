@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     // 주문 정보 조회
-    @GetMapping("/get/order/{userId}")
+    @GetMapping("/get/user/{userId}/order/{orderId}")
     public ResponseEntity<CommonResponse> getDetailOrder(@PathVariable Long orderId, @PathVariable Long userId) {
         // 비지니스 로직
         GetDetailOrderResponse response = orderService.getDetailOrder(orderId, userId);
