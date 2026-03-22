@@ -6,8 +6,8 @@ import com.example.cru.domain.user.model.CreateUserResponse;
 import com.example.cru.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,11 +19,11 @@ public class UserController {
     private final UserService userService;
 
     //회원 생성
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<CommonResponse> createUserApi(@PathVariable Long userId, CreateUserRequest request) {
+    @PostMapping("/users")
+    public ResponseEntity<CommonResponse> createUserApi(@RequestBody CreateUserRequest request) {
 
         //비지니스 로직
-        CreateUserResponse response = userService.createUser(userId, request);
+        CreateUserResponse response = userService.createUser(request);
 
         //Dto 반환
         return ResponseEntity.ok(CommonResponse.success("회원을 생성했습니다.", response));

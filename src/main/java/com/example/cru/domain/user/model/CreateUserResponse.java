@@ -9,13 +9,13 @@ import lombok.Getter;
 public class CreateUserResponse {
     private final String email;
     private final String name;
-    private final String phon;
+    private final String phone;
 
     public static CreateUserResponse from(User user) {
         return CreateUserResponse.builder()
                 .email(user.getEmail())
                 .name(user.getName())
-                .phon(user.getPhone())
+                .phone(user.getPhone())
                 .build();
     }
 }
