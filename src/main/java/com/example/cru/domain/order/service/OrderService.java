@@ -169,6 +169,7 @@ public class OrderService {
             throw new RuntimeException("PENDING 상태에서 취소 가능합니다.");
         }
         order.updateStatus(OrderStatus.CANCELED);
+        order.delete();
     }
 }
 
