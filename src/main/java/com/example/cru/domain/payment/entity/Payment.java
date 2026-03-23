@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLRestriction("is_deleted = false")
 public class Payment {
 
     @Id
