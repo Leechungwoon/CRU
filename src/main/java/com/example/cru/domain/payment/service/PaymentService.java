@@ -8,6 +8,8 @@ import com.example.cru.domain.payment.entity.Payment;
 import com.example.cru.domain.payment.model.PaymentDto;
 import com.example.cru.domain.payment.model.request.SuccessPaymentRequest;
 import com.example.cru.domain.payment.repository.PaymentRepository;
+import com.example.cru.domain.user.entity.User;
+import com.example.cru.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +22,15 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     //결제 승인
     @Transactional
-    public PaymentDto successPayment(Long orderId, SuccessPaymentRequest request) {
+    public PaymentDto successPayment(Long userId, Long orderId, SuccessPaymentRequest request) {
+
+        // 회원 조회
+        User buyer = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("회원 정보가 일치하지 않습니다."));
 
         // 1. 주문 조회
         Order order = orderRepository.findById(orderId)
@@ -55,7 +62,10 @@ public class PaymentService {
 
     //결제 취소
     @Transactional
-    public void canceledPayment(Long paymentId) {
+    public void canceledPayment(Long userId, Long paymentId) {
+
+        User buyer = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
         // 1. 결제 조회
         Payment payment = paymentRepository.findById(paymentId)
@@ -76,7 +86,11 @@ public class PaymentService {
 
     //결제 조회
     @Transactional(readOnly = true)
-    public PaymentDto getMyPayment(Long orderId) {
+    public PaymentDto getMyPayment(Long userId, Long orderId) {
+
+        //회원 조회
+        User buyer = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 아닙니다."));
 
         //결제 상품 조회
         Payment payment = paymentRepository.findByOrderId(orderId)
