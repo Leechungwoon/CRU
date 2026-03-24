@@ -7,4 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>{
    Optional<User> findById(Long id);
+
+    //중복 이메일 여부
+    Boolean existsByEmail(String email);
 }
