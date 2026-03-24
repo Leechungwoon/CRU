@@ -2,7 +2,7 @@ package com.example.cru.domain.user.controller;
 
 import com.example.cru.common.model.CommonResponse;
 import com.example.cru.domain.user.model.RegisterUserRequest;
-import com.example.cru.domain.user.model.CreateUserResponse;
+import com.example.cru.domain.user.model.RegisterUserResponse;
 import com.example.cru.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> createUserApi(@RequestBody RegisterUserRequest request) {
 
         //비지니스 로직
-        CreateUserResponse response = userService.registerUser(request);
+        RegisterUserResponse response = userService.registerUser(request);
 
         //Dto 반환
         return ResponseEntity.ok(CommonResponse.success("회원을 생성했습니다.", response));

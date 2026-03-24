@@ -2,7 +2,7 @@ package com.example.cru.domain.user.service;
 
 import com.example.cru.domain.user.entity.User;
 import com.example.cru.domain.user.model.RegisterUserRequest;
-import com.example.cru.domain.user.model.CreateUserResponse;
+import com.example.cru.domain.user.model.RegisterUserResponse;
 import com.example.cru.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +18,7 @@ public class UserService {
 
     //회원 가입 로직
     @Transactional
-    public CreateUserResponse registerUser(RegisterUserRequest request) {
+    public RegisterUserResponse registerUser(RegisterUserRequest request) {
 
         // 데이터 준비
         // 비밀번호 암호화를 위해 requestPassword -> passwordEncoder 변경
@@ -44,6 +44,6 @@ public class UserService {
         userRepository.save(user);
 
         //Dto 반환
-        return CreateUserResponse.from(user);
+        return RegisterUserResponse.from(user);
     }
 }
