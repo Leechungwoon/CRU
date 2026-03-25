@@ -34,6 +34,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    //JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+
     //Spring Security
     // Source: https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
     implementation 'org.springframework.security:spring-security-crypto:7.1.0-M3' //시큐리티 일부 기능(암호화만 관리함)
