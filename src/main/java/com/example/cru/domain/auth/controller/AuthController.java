@@ -46,8 +46,8 @@ public class AuthController {
      *
      * @return 200반환 -> 토큰 삭제
      */
-    @DeleteMapping("/logout")
-    public ResponseEntity<LoginResponse> logout() {
-        return ResponseEntity.ok().build();
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse> logout() {
+        return ResponseEntity.ok(CommonResponse.success("로그아웃 됐습니다."));
     }
 }
