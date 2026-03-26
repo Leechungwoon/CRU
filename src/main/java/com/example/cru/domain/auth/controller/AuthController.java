@@ -26,6 +26,7 @@ public class AuthController {
 
     /**
      * 로그인
+     *
      * @param request 이메일, 비밀번호
      * @return 이메일, 비밀번호 반환
      */
@@ -42,6 +43,7 @@ public class AuthController {
 
     /**
      * 로그아웃
+     *
      * @return 200반환 -> 토큰 삭제
      */
     @DeleteMapping("/logout")
