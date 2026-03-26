@@ -8,10 +8,7 @@ import com.example.cru.domain.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -27,7 +24,12 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("login")
+    /**
+     * 로그인
+     * @param request 이메일, 비밀번호
+     * @return 이메일, 비밀번호 반환
+     */
+    @PostMapping("/login")
     public ResponseEntity<CommonResponse> loginApi(@RequestBody LoginRequest request) {
         log.info("AuthController.loginApi()");
 
@@ -36,5 +38,14 @@ public class AuthController {
 
         //Dto 반환
         return ResponseEntity.ok(CommonResponse.success("로그인에 성공했습니다.", response));
+    }
+
+    /**
+     * 로그아웃
+     * @return 200반환 -> 토큰 삭제
+     */
+    @DeleteMapping("/logout")
+    public ResponseEntity<LoginResponse> logout() {
+        return ResponseEntity.ok().build();
     }
 }
