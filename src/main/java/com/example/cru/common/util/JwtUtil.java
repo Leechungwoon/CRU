@@ -21,7 +21,7 @@ public class JwtUtil {
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 토큰 유효 시간(60분)
 
     //JWT 성명에 사용될 비밀 키
-    @Value("${JWT_SECRET_KEY}")
+    @Value("${jwt.secret.key}")
     private String secreKeyString;
 
     private SecretKey key; // JWT 서명/검증에 사용할 암호화 키 객체

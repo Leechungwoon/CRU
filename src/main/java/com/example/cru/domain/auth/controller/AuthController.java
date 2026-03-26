@@ -1,6 +1,7 @@
 package com.example.cru.domain.auth.controller;
 
 import com.example.cru.common.model.CommonResponse;
+import com.example.cru.common.util.JwtUtil;
 import com.example.cru.domain.auth.model.LoginRequest;
 import com.example.cru.domain.auth.model.LoginResponse;
 import com.example.cru.domain.auth.service.AuthService;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final JwtUtil jwtUtil;
     private final AuthService authService;
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-    public AuthController(AuthService authService) {
+    public AuthController(JwtUtil jwtUtil, AuthService authService) {
+        this.jwtUtil = jwtUtil;
         this.authService = authService;
     }
 
