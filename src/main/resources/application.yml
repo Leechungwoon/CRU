@@ -16,5 +16,9 @@ spring:
       hibernate:
         format_sql: true
 
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
 server:
   port: 8080

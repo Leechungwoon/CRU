@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CreateUserResponse {
+public class RegisterUserResponse {
     private final String email;
     private final String name;
     private final String phone;
 
-    public static CreateUserResponse from(User user) {
-        return CreateUserResponse.builder()
+    public static RegisterUserResponse from(User user) {
+        return RegisterUserResponse.builder()
                 .email(user.getEmail())
                 .name(user.getName())
                 .phone(user.getPhone())
