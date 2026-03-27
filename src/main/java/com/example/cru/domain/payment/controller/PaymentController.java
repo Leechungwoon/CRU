@@ -6,6 +6,7 @@ import com.example.cru.domain.payment.model.request.SuccessPaymentRequest;
 import com.example.cru.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,35 +18,35 @@ public class PaymentController {
 
     //결제 승인
     @PostMapping("/order/{orderId}/payment")
-    public ResponseEntity<CommonResponse> successPay(@PathVariable Long orderId, @RequestBody SuccessPaymentRequest request) {
+    public ResponseEntity<CommonResponse> successPay(@AuthenticationPrincipal Long userId,  @PathVariable Long orderId, @RequestBody SuccessPaymentRequest request) {
 
         //비지니스 로직
-        PaymentDto response = paymentService.successPayment(orderId,request);
+        PaymentDto response = paymentService.successPayment(userId,orderId,request);
 
         //Dto 반환
         return ResponseEntity.ok(CommonResponse.success("결제가 완료 됐습니다.", response));
     }
 
     //결제 취소
-    @PostMapping
-    public ResponseEntity<CommonResponse> canceledPay(@PathVariable Long paymentId) {
+    @PostMapping("/payments/{paymentId}/cancel")
+    public ResponseEntity<CommonResponse> canceledPay(@AuthenticationPrincipal Long userId, @PathVariable Long paymentId) {
 
         //비지니스 로직
-        paymentService.canceledPayment(paymentId);
+        paymentService.canceledPayment(userId, paymentId);
 
         //Dto 반환
         return ResponseEntity.ok(CommonResponse.success("결제가 취소되었습니다.", null));
     }
 
     //결제 조회
-    @GetMapping
-    public ResponseEntity<CommonResponse> getMyPay(@PathVariable Long orderId) {
+    @GetMapping("/orders/{orderId}/payments")
+    public ResponseEntity<CommonResponse> getMyPay(@AuthenticationPrincipal Long userId, @PathVariable Long orderId) {
 
         //비지니스 로직
-        PaymentDto response = paymentService.getMyPayment(orderId);
+        PaymentDto response = paymentService.getMyPayment(userId, orderId);
 
         //Dto 반환
-        return ResponseEntity.ok(CommonResponse.success("결제 내역이 조회됐습니다."));
+        return ResponseEntity.ok(CommonResponse.success("결제 내역이 조회됐습니다.", response));
     }
 
 }
