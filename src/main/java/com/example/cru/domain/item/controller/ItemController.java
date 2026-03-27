@@ -6,6 +6,7 @@ import com.example.cru.domain.item.model.CreateItemResponse;
 import com.example.cru.domain.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,7 @@ public class ItemController {
 
     //item 등록
     @PostMapping("/item/{userId}")
-    public ResponseEntity<CommonResponse> createItem(@PathVariable Long userId, @RequestBody CreateItemRequest request) {
+    public ResponseEntity<CommonResponse> createItem(@AuthenticationPrincipal Long userId, @RequestBody CreateItemRequest request) {
 
         //비지니스 로직
         CreateItemResponse response = itemService.createItem(userId, request);
