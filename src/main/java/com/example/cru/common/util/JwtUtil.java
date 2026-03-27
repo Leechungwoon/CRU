@@ -135,4 +135,15 @@ public class JwtUtil {
         //만료 시간 - 현재 시간 = 남은 시간 (음수는 0 반환)
         return Math.max(expiration.getTime() - now, 0);
     }
+
+    /**
+     * JWT 토큰에서 userId 추출
+     * @param token 검증된 JWT 토큰
+     * @return 토큰에 담긴 사영자 Id
+     */
+    public Long getUserId(String token) {
+
+        //토큰에서 모든 클레임(payload 정보) 꺼내고 Subject를 Long 으로 저장해서 반환
+        return Long.parseLong(extractAllClaims(token).getSubject());
+    }
 }

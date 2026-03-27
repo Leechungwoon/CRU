@@ -42,6 +42,7 @@ dependencies {
     //Spring Security
     // Source: https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
     implementation 'org.springframework.security:spring-security-crypto:7.1.0-M3' //시큐리티 일부 기능(암호화만 관리함)
+    implementation "org.springframework.boot:spring-boot-starter-security" // 시큐리티 전체
 }
 
 tasks.named('test') {
