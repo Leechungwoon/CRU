@@ -1,6 +1,8 @@
 package com.example.cru.domain.order.service;
 
 import com.example.cru.common.enums.OrderStatus;
+import com.example.cru.common.exception.CustomException;
+import com.example.cru.common.exception.ErrorCode;
 import com.example.cru.domain.item.entity.Item;
 import com.example.cru.domain.item.repository.ItemRepository;
 import com.example.cru.domain.order.entity.Order;
@@ -42,7 +44,7 @@ public class OrderService {
 
         //유저(판매자) 조회
         User buyer = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         //총 금액 계산
         /**
@@ -89,8 +91,7 @@ public class OrderService {
 
             //주문 상품 조회 및 실제 존재 상품인지 검증
             Item item = itemRepository.findById(itemRequest.getItemId())
-                    .orElseThrow(() -> new RuntimeException());
-            //.orElseThrow(() -> new BusinessException(ErrorCode.ITEM_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
@@ -132,41 +133,41 @@ public class OrderService {
 
     //주문 정보 상세 조회
     @Transactional(readOnly = true)
-    public GetDetailOrderResponse getDetailOrder(Long orderId, Long userId){
+    public GetDetailOrderResponse getDetailOrder(Long orderId, Long userId) {
 
         //Order 정보 조회
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         //OrderItem 목록 조회
         List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
 
-        return GetDetailOrderResponse.from(order,orderItemList);
+        return GetDetailOrderResponse.from(order, orderItemList);
     }
 
     //주문 정보 목록 조회
     @Transactional(readOnly = true)
     public Page<GetOrderListResponse> getAllOrder(Long userId, Pageable pageable) {
 
-        Page<Order>orders = orderRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+        Page<Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
         return orders.map(GetOrderListResponse::from);
     }
 
     //주문 취소 로직
     @Transactional
-    public void cancelOrder(Long orderId, Long userId){
+    public void cancelOrder(Long orderId, Long userId) {
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         // 본인 주문 여부
-        if (!order.getUserId().equals(userId)){
-            throw new RuntimeException("본인 주문만 취소 가능합니다.");
+        if (!order.getUserId().equals(userId)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         //PENDING 상태인지 확인
-        if (!order.isCancelable()){
-            throw new RuntimeException("PENDING 상태에서 취소 가능합니다.");
+        if (!order.isCancelable()) {
+            throw new CustomException(ErrorCode.ORDER_NOT_CANCELABLE);
         }
         order.updateStatus(OrderStatus.CANCELED);
         order.delete();
