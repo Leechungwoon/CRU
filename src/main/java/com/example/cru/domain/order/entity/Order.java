@@ -21,6 +21,9 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    private Long version; //낙관적 락 버전 컬럼 -> 저장시 1 증가, 동시 수정 감시용
+
     @Column(nullable = false)
     private Long userId; //주문자 id
 
@@ -52,6 +55,11 @@ public class Order extends BaseEntity {
     //주문 취소 시 사용(PENDING)인 경우에만 변경 가능
     public boolean isCancelable() {
         return this.status == OrderStatus.PENDING;
+    }
+
+    //결제 진행 가능 여부 - PENDING 상태인 주문만 결제 허용
+    public boolean isPayable() {
+        return this.status == OrderStatus.PENDING; //PENDING만 결제 가능
     }
 
 }

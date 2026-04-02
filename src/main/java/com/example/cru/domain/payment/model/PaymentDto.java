@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class PaymentDto {
     private Long paymentId;
+    private String paymentKey;
     private int amount;
     private PaymentStatus status;
     private LocalDateTime paidAt;
@@ -21,6 +22,7 @@ public class PaymentDto {
     public static PaymentDto from(Payment pay){
         return PaymentDto.builder()
                 .paymentId(pay.getId())
+                .paymentKey(pay.getPaymentKey())
                 .amount(pay.getAmount())
                 .status(pay.getStatus())
                 .paidAt(pay.getPaidAt())
