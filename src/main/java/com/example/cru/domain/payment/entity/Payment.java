@@ -4,7 +4,6 @@ import com.example.cru.common.enums.PaymentStatus;
 import com.example.cru.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLRestriction("is_deleted = false")
 public class Payment {
 
     @Id
@@ -25,6 +23,9 @@ public class Payment {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
+
+    @Column(name = "payment_key", nullable = false, unique = true) //Toss 발급 키 - 환불 시 필수
+    private String paymentKey; //unique로 중복 저장 자체를 DB 레벨에서 차단
 
     @Column(nullable = false)
     private int amount; // 실제 결제 금액
@@ -41,8 +42,8 @@ public class Payment {
 
     // 결제 취소
     public void cancel() {
-        this.status = PaymentStatus.CANCELED;
-        this.canceledAt = LocalDateTime.now();
+        this.status = PaymentStatus.CANCELED; //상태 변경
+        this.canceledAt = LocalDateTime.now(); //취소 시각 기록
     }
     //결제 상태가 성공 및 취소만 있는 이유는 결제 MVP에서는 승인 실패 시 payment에 저장을 안하기 때문에 예외로 대체로 진행 추후 PG 연동 후 FAILED 상태 추가 예정
 }

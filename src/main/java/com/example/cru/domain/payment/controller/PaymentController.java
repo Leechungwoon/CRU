@@ -17,7 +17,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     //결제 승인
-    @PostMapping("/order/{orderId}/payment")
+    @PostMapping("/orders/{orderId}/payments")
     public ResponseEntity<CommonResponse> successPay(@AuthenticationPrincipal Long userId,  @PathVariable Long orderId, @RequestBody SuccessPaymentRequest request) {
 
         //비지니스 로직

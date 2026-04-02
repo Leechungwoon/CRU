@@ -2,6 +2,8 @@ package com.example.cru.domain.payment.service;
 
 import com.example.cru.common.enums.OrderStatus;
 import com.example.cru.common.enums.PaymentStatus;
+import com.example.cru.common.exception.CustomException;
+import com.example.cru.common.exception.ErrorCode;
 import com.example.cru.domain.order.entity.Order;
 import com.example.cru.domain.order.repository.OrderRepository;
 import com.example.cru.domain.payment.entity.Payment;
@@ -65,11 +67,11 @@ public class PaymentService {
 
         // 1. 결제 조회
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다,"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         //2. 결제 본인 검증
         if (!payment.getOrder().getUserId().equals(userId)) {
-            throw new RuntimeException("결제 정보를 찾을 수 없습니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         // 3. 취소 전,후 여부 확인
@@ -91,11 +93,11 @@ public class PaymentService {
 
         // 1. 결제 상품 조회
         Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         // 2. 결제 본인 인지 검증
         if (!payment.getOrder().getUserId().equals(userId)) {
-            throw new RuntimeException("본인 결제 조회 가능합니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         return PaymentDto.from(payment);
