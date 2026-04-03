@@ -8,6 +8,7 @@ import com.example.cru.domain.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -41,13 +42,33 @@ public class AuthController {
         return ResponseEntity.ok(CommonResponse.success("로그인에 성공했습니다.", response));
     }
 
+    //Access Token 재발급
+
+    /**
+     * Access Token 재발급
+     *
+     * @param refreshToken 클라이언트가  보낸 Refresh Token
+     * @return 새로 발급된 Access Token
+     */
+    @PostMapping("/reissue")
+    public ResponseEntity<CommonResponse> reissue(
+            @RequestHeader("Refresh-Token") String refreshToken
+    ) {
+        String newAccessToken = authService.reissueAccessToken(refreshToken);
+
+        return ResponseEntity.ok(CommonResponse.success("Access Token이 제발급됐습니다.", newAccessToken));
+    }
+
     /**
      * 로그아웃
      *
      * @return 200반환 -> 토큰 삭제
      */
     @DeleteMapping("/logout")
-    public ResponseEntity<LoginResponse> logout() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CommonResponse> logout(@AuthenticationPrincipal Long userId) {
+
+        authService.logout(userId);
+
+        return ResponseEntity.ok(CommonResponse.success("로그아웃 됐습니다.", null));
     }
 }
