@@ -7,9 +7,11 @@ public class LoginResponse {
 
     private final Long id;
     private final String token;
+    private final String refreshToken;
 
-    public LoginResponse(Long id, String token) {
+    public LoginResponse(Long id, String token, String refreshToken) {
         this.id = id;
         this.token = token;
+        this.refreshToken = refreshToken;
     }
 }

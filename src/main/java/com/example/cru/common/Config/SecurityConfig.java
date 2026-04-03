@@ -46,7 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/login",
                                 "/auth/logout",
+                                "/auth/reissue",
                                 "/api/users"
+
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
