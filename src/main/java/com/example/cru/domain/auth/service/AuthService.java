@@ -89,7 +89,7 @@ public class AuthService {
         String newToken = jwtUtil.generateRefreshToken(userId); //새로운 Refresh Token 생성
         LocalDateTime expiresAt = jwtUtil.getRefreshTokenExpiry(); // 만료 시각 (7일 후)
 
-        refreshTokenRepository.findUserId(userId)
+        refreshTokenRepository.findByUserId(userId)
                 .ifPresentOrElse(
                         existing -> existing.updateToken(newToken, expiresAt), // 기존 토큰 갱신
                         () -> refreshTokenRepository.save( // 없는 경우 새로 저장
