@@ -23,6 +23,16 @@ configurations {
 repositories {
     mavenCentral()
 }
+// Spring Cloud AWS 버전 관리
+ext {
+    set('springCloudAwsVersion', "4.0.0-M1")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}"
+    }
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -43,6 +53,9 @@ dependencies {
     // Source: https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
     implementation 'org.springframework.security:spring-security-crypto:7.1.0-M3' //시큐리티 일부 기능(암호화만 관리함)
     implementation "org.springframework.boot:spring-boot-starter-security" // 시큐리티 전체
+
+    // AWS S3
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
 }
 
 tasks.named('test') {
