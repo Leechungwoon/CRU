@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/auth/logout",
                                 "/auth/reissue",
                                 "/api/users",
-                                "api/images/**"
+                                "/api/images/**"
 
                         ).permitAll()
                         .anyRequest().authenticated()
