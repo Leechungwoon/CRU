@@ -17,9 +17,20 @@ public class S3Controller {
     @PostMapping("/upload")
     public ResponseEntity<CommonResponse> upload(@RequestPart("file") MultipartFile file, @RequestParam(defaultValue = "images") String folder) {
 
+        //비지니스 로직
         String key = s3Service.upload(file, folder);
 
+        //반환
         return ResponseEntity.ok(CommonResponse.success("이미지 업로드 완료", key));
+    }
 
+    @GetMapping("/presigend_Url")
+    public ResponseEntity<CommonResponse> getPresignedUrl(@RequestParam String key) {
+
+        //비지니스 로직
+        String url = s3Service.presignedUrl(key);
+
+        //반환
+        return ResponseEntity.ok(CommonResponse.success("발급 완료됐습니다.", url));
     }
 }

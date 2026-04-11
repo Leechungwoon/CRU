@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -42,10 +45,10 @@ public class S3Service {
 
         try {
             PutObjectRequest request = PutObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(fileName)
-                    .contentType(contentType)
-                    .build();
+                    .bucket(bucket) // 버킷 이름
+                    .key(fileName) // 파일 경로
+                    .contentType(contentType) // 파일 타입(폴더/파일명)
+                    .build(); // 파일 타입 (image/jpeg 등)
 
             s3Client.putObject(request, RequestBody.fromInputStream(
                     file.getInputStream(), // 파일 데이터 크기
@@ -55,5 +58,22 @@ public class S3Service {
             throw new CustomException(ErrorCode.S3_UPLOAD_FAILED);
         }
         return fileName; //저장된 키 반환 -> DB에 저장
+    }
+
+    //Presigned URL 생성
+    public String presignedUrl(String key) {
+
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(10)) //유효시간 10분
+                .build();
+
+        return s3Presigner.presignGetObject(presignRequest)
+                .url()
+                .toString();// 임시 URL 반환
     }
 }
