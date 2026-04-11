@@ -17,6 +17,7 @@ import com.example.cru.domain.order_item.repository.OrderItemRepository;
 import com.example.cru.domain.order_item_custom.entity.OrderItemCustom;
 import com.example.cru.domain.order_item_custom.model.request.OrderItemCustomRequest;
 import com.example.cru.domain.order_item_custom.OrderItemCustomRepository;
+import com.example.cru.domain.s3.S3Service;
 import com.example.cru.domain.user.entity.User;
 import com.example.cru.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemCustomRepository orderItemCustomRepository;
     private final ItemRepository itemRepository;
+    private final S3Service s3Service;
 
 
     //주문 생성
@@ -132,20 +134,28 @@ public class OrderService {
     }
 
     //주문 정보 상세 조회
+
+    /**
+     * 주문 정보 상세 조회
+     *
+     * @param orderId 취소할 주문 ID
+     * @param userId  요청한 유저 ID
+     * @return 주문 상세 정보 DTO
+     */
     @Transactional(readOnly = true)
     public GetDetailOrderResponse getDetailOrder(Long orderId, Long userId) {
 
-        //Order 정보 조회
+        // 1. Order 정보 조회
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        //OrderItem 목록 조회
+        // 2. OrderItem 목록 조회
         List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
 
         return GetDetailOrderResponse.from(order, orderItemList);
     }
 
-    //주문 정보 목록 조회
+    // 3. 주문 정보 목록 조회
     @Transactional(readOnly = true)
     public Page<GetOrderListResponse> getAllOrder(Long userId, Pageable pageable) {
 
@@ -154,21 +164,50 @@ public class OrderService {
     }
 
     //주문 취소 로직
+
+    /**
+     * 주문 취소 로직
+     * PENDING 상태인 주문만 취소 가능
+     * CANCEL로 변경 시 S3에 업로드된 이미지 자동 삭제
+     *
+     * @param orderId 취소할 주문 ID
+     * @param userId  요청한 유저 ID
+     */
     @Transactional
     public void cancelOrder(Long orderId, Long userId) {
 
+        // 1. 주문 조회
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        // 본인 주문 여부
+        // 2. 본인 주문 여부 확인
         if (!order.getUserId().equals(userId)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
-        //PENDING 상태인지 확인
+        // 3. 취소 기능 상태 확인 PENDING 상태인지 확인
         if (!order.isCancelable()) {
             throw new CustomException(ErrorCode.ORDER_NOT_CANCELABLE);
         }
+
+        // 4. 해당 주문의 OrderItem 목록 조회
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
+
+        // 5. 각 연결된 OrderItem에 연결된 커스텀 이미지 S3에 삭제
+        for (OrderItem orderItem : orderItemList) {
+
+            //커스텀 옵션이 있는 경우에만 삭제
+            orderItemCustomRepository.findByOrderItemId(orderItem.getId())
+                    .ifPresent(custom -> {
+
+                        //고객이 직접 업로드한 엠블럼 삭제
+                        if (custom.getEmblemImageUrl() != null) {
+                            s3Service.delete(custom.getEmblemImageUrl());
+                        }
+                    });
+        }
+
+        // 6. 주문 상태 변경 + 소프트 삭제
         order.updateStatus(OrderStatus.CANCELED);
         order.delete();
     }
